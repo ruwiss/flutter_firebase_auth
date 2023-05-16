@@ -1,10 +1,12 @@
 import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:login_screen/screens/second_screen.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthService {
   final userCollection = FirebaseFirestore.instance.collection("users");
@@ -42,4 +44,22 @@ class AuthService {
       "password": password
     });
   }
+
+  Future<User?> signInWithGoogle() async {
+    // Oturum açma sürecini başlat
+    final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
+
+    // Süreç içerisinden bilgileri al
+    final GoogleSignInAuthentication gAuth = await gUser!.authentication;
+
+    // Kullanıcı nesnesi oluştur
+    final credential = GoogleAuthProvider.credential(accessToken: gAuth.accessToken, idToken: gAuth.idToken);
+
+    // Kullanıcı girişini sağla
+    final UserCredential userCredential = await firebaseAuth.signInWithCredential(credential);
+    log(userCredential.user!.email.toString());
+    return userCredential.user;
+
+  }
+
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:ionicons/ionicons.dart';
 import 'package:login_screen/locator.dart';
+import 'package:login_screen/screens/second_screen.dart';
 import 'package:login_screen/services/auth_service.dart';
 import 'package:login_screen/utils/helper_functions.dart';
 import '../../../utils/constants.dart';
@@ -124,7 +125,11 @@ class _LoginContentState extends State<LoginContent>
         children: [
           Image.asset('assets/images/facebook.png'),
           const SizedBox(width: 24),
-          Image.asset('assets/images/google.png'),
+          InkWell(
+              onTap: () async{
+                locator.get<AuthService>().signInWithGoogle().then((value) => Navigator.of(context).push(MaterialPageRoute(builder: (context) => SecondScreen(), settings: RouteSettings(arguments: value))));
+              },
+              child: Image.asset('assets/images/google.png')),
         ],
       ),
     );
